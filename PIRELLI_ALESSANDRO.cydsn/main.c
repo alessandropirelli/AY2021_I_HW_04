@@ -9,17 +9,48 @@
  *
  * ========================================
 */
+
+#define LED_OFF 0
+#define PWM_OFF 0
+#define PHR 0
+#define PTM 1
+
 #include "project.h"
+#include "Interrupts.h"
 
 int main(void)
 {
-    CyGlobalIntEnable; /* Enable global interrupts. */
+    CyGlobalIntEnable; 
+   
+    AMux_Start();
+    AMux_FastSelect(PHR);
+    ADC_DelSig_Start();
+    UART_Start();
     
-    /* Place your initialization/startup code here (e.g. MyInst_Start()) */
-
+    isr_Timer_StartEx(Sampling);
+    isr_Rx_StartEx(Rx);
+    PWM_Start();
+     
+    Data[0]= 0xA0;
+    Data[DATA_SIZE-1]= 0xC0;
+    
+    PacketFlag=0;
+    PWMFlag=0;   
+       
+    ADC_DelSig_StartConvert();
+    
     for(;;)
     {
-        /* Place your application code here. */
+        if(PacketFlag==1){
+            UART_PutArray(Data, DATA_SIZE);
+            PacketFlag=0;
+        }
+        
+        if(PWMFlag==1){
+            PWM_WriteCompare(value_PTM);        
+        }
+        
+        
     }
 }
 
