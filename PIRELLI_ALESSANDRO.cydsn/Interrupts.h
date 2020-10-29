@@ -16,24 +16,23 @@
     #include "cytypes.h"
     #include "stdio.h"
     
-    #define BYTE_TO_SEND 4
-    #define DATA_SIZE 1+BYTE_TO_SEND+1
-    #define THRESHOLD 30000                 
+    #define BYTE_TO_SEND 4                  //2 bytes for the photoresistor value, 2 bytes for the potentiometer's one
+    #define DATA_SIZE 1+BYTE_TO_SEND+1      //total size of the data including head and tail bytes
+    #define THRESHOLD 30000                 //threshold value choosen experimentally      
     
-    #define PHR 0
-    #define PTM 1
+    #define PHR 0                   //photoresistor's Amux channel
+    #define PTM 1                   //potentiometer's Amux channel
     
     CY_ISR_PROTO (Sampling);
     CY_ISR_PROTO (Rx);
-    CY_ISR_PROTO (ChangeChannel);
+        
+    uint8 Data[DATA_SIZE];          
     
-    uint8 Data[DATA_SIZE];
+    int32 value_PHR;                //light intensity sampled from the photoresistor 
+    int32 value_PTM;                //voltage intensity sampled from the potentiometer
+    uint8 PWMFlag;                  //flag used to allow the device to update the intensity of the bulb's light through PWM 
     
-    int32 value_PHR;            //light intensity sampled from the photoresistor 
-    int32 value_PTM;            //voltage intensity sampled from the potentiometer
-    uint8 PWMFlag;              //flag used to allow the device to update the intensity of the bulb's light through PWM 
-    
-    volatile uint8 PacketFlag;
+    volatile uint8 PacketFlag;      //flag used to know that data is available
     
 #endif
 
