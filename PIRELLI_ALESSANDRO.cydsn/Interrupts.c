@@ -16,15 +16,15 @@
 #include "Interrupts.h"
 #include "project.h"
 
-int32 value;
-uint8 ch_received;
+
+uint8 ch_received;              //variable used to save the character sent to UART via terminal
 uint8 RxFlag=0;                 //flag that gets high when the device gets started via terminal
 
 CY_ISR(Sampling){
     
     Timer_ReadStatusRegister();
             
-    if(RxFlag==1){                                          //only if the device has been started
+    if(RxFlag==1){                                          //only if the device has been started by terminal
                
             value_PHR = ADC_DelSig_Read32();                //sample the photoresistor channel 
             if(value_PHR<0) value_PHR=0;
@@ -45,17 +45,17 @@ CY_ISR(Sampling){
             }else{                                          //if light level over threshold
                 
                 PWMFlag = 0;         //leads to turning off the LED  (see main.c)                     
-                
+                value_PTM = 0;       //since we are no longer sampling the potentiometer (because the light level is high enough) its value gets set to 0
             }
         
-        Data[1]=value_PHR>>8;
-        Data[2]=value_PHR & 0xFF;
-        Data[3]=value_PTM>>8;
+        Data[1]=value_PHR>>8;       //
+        Data[2]=value_PHR & 0xFF;   //
+        Data[3]=value_PTM>>8;       //
         Data[4]=value_PTM & 0xFF;   //build data to send back to terminal
                
         PacketFlag=1;
-        }
     }
+}
 
 
 

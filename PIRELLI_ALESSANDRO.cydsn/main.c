@@ -20,13 +20,13 @@ int main(void)
     CyGlobalIntEnable; 
    
     AMux_Start();                   //start the Amux
-    AMux_FastSelect(PHR);           //device starts from sampling tha photoresistor's channel
+    AMux_FastSelect(PHR);           //device starts from sampling tha photoresistor's channel when first activated
     ADC_DelSig_Start();             //start the ADC
     UART_Start();                   //start the UART
     PWM_Start();                    //start the PWM
     
     isr_Timer_StartEx(Sampling);    //"Sampling" function triggered by timer's counter overflow
-    isr_Rx_StartEx(Rx);             //"RX" function trigger when UART receives data
+    isr_Rx_StartEx(Rx);             //"RX" function triggered when UART receives data
          
     Data[0]= 0xA0;                  //head added to data
     Data[DATA_SIZE-1]= 0xC0;        //tail added to data  
